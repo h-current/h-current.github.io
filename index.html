@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Link</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        const REDIRECT_URL = 'https://hubbleedu.github.io';
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .main-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .url-display {
+            font-size: 2.2rem;
+            font-weight: 600;
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            word-break: break-all;
+            line-height: 1.3;
+            border: 2px solid #ffffff;
+            border-radius: 8px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            text-decoration: underline;
+            text-decoration-color: #009CFC;
+            text-decoration-thickness: 3px;
+            text-underline-offset: 4px;
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+        
+        .url-display:hover {
+            transform: scale(1.05);
+        }
+        
+        .description {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .redirect-button {
+            background: linear-gradient(135deg, #009CFC 0%, #A0AAFF 50%, #C97FFD 100%);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,156,252,0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .redirect-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,156,252,0.4);
+        }
+        
+        .redirect-button:active {
+            transform: translateY(0) scale(0.95);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #009CFC;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 768px) {
+            .url-display {
+                font-size: 1.6rem;
+                padding: 0.8rem;
+                line-height: 1.2;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+            
+            .main-container {
+                padding: 2rem;
+            }
+            
+            .notification {
+                top: 10px;
+                right: 10px;
+                padding: 0.8rem 1.2rem;
+                font-size: 0.8rem;
+                transform: translateX(120%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification">URL copied to clipboard!</div>
+    <div class="main-container">
+        <div class="url-display" id="current-link">Loading...</div>
+        <p class="description">
+            Click the URL above to copy it, or use the button below to head to the site.
+        </p>
+        <a href="#" id="redirect-button" class="redirect-button">Go To Hubble</a>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentLinkElement = document.getElementById('current-link');
+            const redirectButton = document.getElementById('redirect-button');
+            
+            const displayUrl = REDIRECT_URL.replace(/^https?:\/\//, '');
+            currentLinkElement.textContent = displayUrl;
+            
+            redirectButton.href = REDIRECT_URL;
+            
+            currentLinkElement.addEventListener('click', async function() {
+                const notification = document.getElementById('notification');
+                
+                try {
+                    await navigator.clipboard.writeText(REDIRECT_URL);
+                    showNotification();
+                } catch (err) {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = REDIRECT_URL;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showNotification();
+                }
+            });
+            
+            function showNotification() {
+                const notification = document.getElementById('notification');
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+    <script>
+        // Developer Tools Protection
+        (function() {
+            'use strict';
+            
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                return false;
+            }, true);
+            
+            document.addEventListener('keydown', function(e) {
+                // F12
+                if (e.keyCode === 123 || e.key === 'F12') {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    document.documentElement.innerHTML = '<body style="background:#000;color:#ff0000;text-align:center;padding-top:40vh;font-size:24px;">ACCESS DENIED</body>';
+                    setTimeout(() => window.location.href = 'about:blank', 500);
+                    return false;
+                }
+                // Ctrl+Shift+I (Inspector)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.keyCode === 73 || e.key === 'I')) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    document.documentElement.innerHTML = '<body style="background:#000;color:#ff0000;text-align:center;padding-top:40vh;font-size:24px;">ACCESS DENIED</body>';
+                    setTimeout(() => window.location.href = 'about:blank', 500);
+                    return false;
+                }
+                // Ctrl+Shift+J (Console)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.keyCode === 74 || e.key === 'J')) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    document.documentElement.innerHTML = '<body style="background:#000;color:#ff0000;text-align:center;padding-top:40vh;font-size:24px;">ACCESS DENIED</body>';
+                    setTimeout(() => window.location.href = 'about:blank', 500);
+                    return false;
+                }
+                // Ctrl+Shift+C (Element Selector)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.keyCode === 67 || e.key === 'C')) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    document.documentElement.innerHTML = '<body style="background:#000;color:#ff0000;text-align:center;padding-top:40vh;font-size:24px;">ACCESS DENIED</body>';
+                    setTimeout(() => window.location.href = 'about:blank', 500);
+                    return false;
+                }
+                // Ctrl+U (View Source)
+                if ((e.ctrlKey || e.metaKey) && (e.keyCode === 85 || e.key === 'u')) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    document.documentElement.innerHTML = '<body style="background:#000;color:#ff0000;text-align:center;padding-top:40vh;font-size:24px;">ACCESS DENIED</body>';
+                    setTimeout(() => window.location.href = 'about:blank', 500);
+                    return false;
+                }
+                // Ctrl+Shift+K (Console Firefox)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.keyCode === 75 || e.key === 'K')) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    document.documentElement.innerHTML = '<body style="background:#000;color:#ff0000;text-align:center;padding-top:40vh;font-size:24px;">ACCESS DENIED</body>';
+                    setTimeout(() => window.location.href = 'about:blank', 500);
+                    return false;
+                }
+            }, true);
+            
+            
+            // Console detection
+            let consoleDetectionCount = 0;
+            let element = new Image();
+            Object.defineProperty(element, 'id', {
+                get: function() {
+                    consoleDetectionCount++;
+                    // Only trigger after multiple detections to avoid false positives
+                    if (consoleDetectionCount > 3) {
+                        document.documentElement.innerHTML = '<body style="background:#000;color:#ff0000;text-align:center;padding-top:40vh;font-size:24px;">ACCESS DENIED</body>';
+                        setTimeout(() => window.location.href = 'about:blank', 500);
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
